@@ -17,6 +17,7 @@ def fetch_webpage_content(url):
     """
     try:
         response = requests.get(url)
+        # check whether the HTTP request was successful.
         response.raise_for_status()
         return bs4.BeautifulSoup(response.content, 'html.parser')
     except requests.RequestException as e:
@@ -48,7 +49,7 @@ def extract_commented_table(soup):
     return pd.read_html(StringIO(str(commented_out_tables[0])))[0]
 
 
-def clean_and_process_table(df):
+def clean_and_process_table(df, country):
     """
     Clean and process the extracted table.
 
@@ -72,6 +73,9 @@ def clean_and_process_table(df):
 
     # Remove header rows from the data
     df = df[df['player'] != 'Player']
+
+    # Add the 'country' column
+    df['country'] = country
 
     return df
 
@@ -102,11 +106,14 @@ def main():
     # output_file = '/home/axel/Code/Python/axel/football_analysis/csv/liga_par_script.csv'
 
     # code to enter the name of the file
-    file_name = input("Enter the output file name (e.g., liga_bol.csv): ").strip()
+    file_name = input("Enter the output file name (without extension): ").strip()
+    file_name = f"{file_name}.csv"
     # Set the directory for saving the file
     output_directory = '/home/axel/Code/Python/axel/football_analysis/csv/'
     output_file = os.path.join(output_directory, file_name)
 
+    # Prompt for country name
+    country = input("Enter the country name to add to the 'country' column: ").strip()
 
     soup = fetch_webpage_content(url)
     if not soup:
@@ -114,7 +121,7 @@ def main():
 
     try:
         df = extract_commented_table(soup)
-        df_cleaned = clean_and_process_table(df)
+        df_cleaned = clean_and_process_table(df, country)
         save_to_csv(df_cleaned, output_file)
     except ValueError as e:
         print(f"Error processing the table: {e}")
