@@ -41,10 +41,10 @@ def process_shots_data(json_fotmob):
     away_shots_target = json_fotmob['props']['pageProps']['content']['stats']['Periods']['All']['stats'][0]['stats'][3]['stats'][1]
     # team colors
     home_color = json_fotmob['props']['pageProps']['general']['teamColors']['darkMode']['home']
-    if home_color == '#ffffff':
+    if home_color.lower() == '#ffffff':
         home_color = '#444444'
     away_color = json_fotmob['props']['pageProps']['general']['teamColors']['darkMode']['away']
-    if away_color == '#ffffff':
+    if away_color.lower() == '#ffffff':
         away_color = '#444444'
 
     return df_shots, local_team_name, away_team_name, local_team_score, away_team_score, local_ball_possesion, away_ball_possesion, local_xG, away_xG, local_total_shots, away_total_shots, local_shots_target, away_shots_target, home_color, away_color, leagueName, leagueRound, local_team_id
@@ -86,7 +86,7 @@ def plot_shots(df_shots, local_team_name, away_team_name, local_team_score, away
                 ec=ec_edge_colors,
                 c=c_color,
                 marker=m_marker,
-                # alpha=1 if x['eventType'] == 'Goal' else 0.5,
+                alpha=1 if x['eventType'] == 'Goal' else 0.5,
                 zorder=2 if x['eventType'] == 'Goal' else 1
             )
         # right side
@@ -113,7 +113,7 @@ def plot_shots(df_shots, local_team_name, away_team_name, local_team_score, away
                 ec=ec_edge_colors,
                 c=c_color,
                 marker=m_marker,
-                # alpha=1 if x['eventType'] == 'Goal' else .5,
+                alpha=1 if x['eventType'] == 'Goal' else .5,
                 zorder=2 if x['eventType'] == 'Goal' else 1
             )
 
